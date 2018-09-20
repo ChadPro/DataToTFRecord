@@ -24,10 +24,10 @@ def convert(isTrain=True):
     record_name = ""
     if isTrain:
         list_file = "random_train_list.txt"
-        record_name = "cifar10_224Train.tfrecord"
+        record_name = "cifar100_224Train.tfrecord"
     else:
         list_file = "random_val_list.txt"
-        record_name = "cifar10_224Val.tfrecord"
+        record_name = "cifar100_224Val.tfrecord"
 
     f = open(list_file)
     data_list = f.readlines()
