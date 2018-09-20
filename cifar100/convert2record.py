@@ -60,14 +60,16 @@ def convert(isTrain=True):
                 sys.stdout.write('\r>> Converting Train image %d/%d' % (count, list_len))
                 sys.stdout.flush()
             else:
-                sys.stdout.write('\r>> Converting Train image %d/%d' % (count, list_len))
+                sys.stdout.write('\r>> Converting Val image %d/%d' % (count, list_len))
                 sys.stdout.flush()
 
     writer.close()
 
 def main(argv):
     convert(isTrain=True)
+    print "######"
     convert(isTrain=False)
+    print "######"
 
 if __name__ == '__main__':
     tf.app.run()
