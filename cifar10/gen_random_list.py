@@ -1,3 +1,10 @@
+# Copyright 2018 The Candela. All Rights Reserved.
+
+"""A script for detect traffic lights."""
+
+from __future__ import absolute_import
+from __future__ import division
+
 import numpy as np
 import tensorflow as tf
 import cv2
@@ -5,8 +12,21 @@ from os import walk
 from os.path import join
 import time
 import random
+import argparse
 
-def read_images(path):
+parser = argparse.ArgumentParser()
+parser.add_argument('--train_path', type=str, help='Train image path.')
+parser.add_argument('--val_path', type=str, help='Validation image path.')
+args = parser.parse_args()
+
+def read_images(path, isTrain=True):
+    txt_name = "error.txt"
+
+    if isTrain:
+        txt_name = "random_train_list.txt"
+    else:
+        txt_name = "random_val_list.txt"
+
     image_all_path = []
     label_all = []
 
@@ -37,10 +57,15 @@ def read_images(path):
     random_image = np_image[random_index]
     random_label = np_label[random_index]
 
-    f = open("image_label_val.txt", "w")
+    f = open(txt_name, "w")
     for i in range(num_images):
         txt_line = str(random_image[i]) + "," + str(random_label[i]) + "\n"
         f.write(txt_line)
     f.close()
 
-read_images("validation/")
+def run():
+    read_images(args.train_path, isTrain=True)
+    read_images(args.val_path, isTrain=False)
+
+if __name__ == '__main__':
+    run()
