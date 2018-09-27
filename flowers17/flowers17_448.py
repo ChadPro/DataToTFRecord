@@ -1,3 +1,8 @@
+# -- coding: utf-8 --
+# Copyright 2018 The LongYan. All Rights Reserved.
+from __future__ import absolute_import
+from __future__ import division
+
 import numpy as np
 import tensorflow as tf
 import time
