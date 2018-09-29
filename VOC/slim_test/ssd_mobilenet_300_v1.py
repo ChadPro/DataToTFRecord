@@ -5,7 +5,7 @@ from collections import namedtuple
 import tensorflow as tf
 import ssd_common
 import tf_extended as tfe
-from nets import custom_layers
+import custom_layers
 slim = tf.contrib.slim
 
 #输入与输出层
