@@ -39,10 +39,10 @@ def read_and_decode(filename_queue):
     })
 
     # image = tf.decode_raw(keys_to_features['image_raw'],tf.uint8)
-    label = tf.cast(keys_to_features['label'],tf.int32)
+    # label = tf.cast(keys_to_features['label'],tf.int32)
     # image.set_shape([IMG_WIDTH*IMG_HEIGHT*IMG_CHANNELS])
     # image = tf.reshape(image,[IMG_SIZE,IMG_SIZE,IMG_CHANNELS])
-    return label
+    return keys_to_features['image/object/bbox/label'].values
 
 def inputs(train_path, val_path, data_set,batch_size,num_epochs):
     data_file_num = 0
@@ -56,9 +56,12 @@ def inputs(train_path, val_path, data_set,batch_size,num_epochs):
         read_file = val_path
 
     with tf.name_scope('tfrecord_input') as scope:
-        filename_queue = tf.train.string_input_producer([TRAIN_FILE %i for i in range(0,data_file_num)], num_epochs=num_epochs)
+        file_lists = [TRAIN_FILE % i for i in range(0,data_file_num)]
+        for j in range(data_file_num):
+            file_lists[j] = join(train_path, file_lists[j])
+
+        filename_queue = tf.train.string_input_producer(file_lists, num_epochs=num_epochs)
         label = read_and_decode(filename_queue)
         labels = tf.train.shuffle_batch([label], batch_size=batch_size, num_threads=64, capacity=5000, min_after_dequeue=3000)
 
     return labels
-    # return images, onehot_labels, labels
