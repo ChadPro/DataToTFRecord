@@ -6,17 +6,36 @@ from __future__ import division
 import numpy as np
 import tensorflow as tf
 import time
-from scipy.misc import imread,imresize
 from os import walk
 from os.path import join
 import sys
 import cv2
+from tensorflow.python.ops import image_ops
+from tensorflow.python.ops import array_ops
 
 # Image 
 IMG_SIZE = 448
 IMG_CHANNELS = 3
 
 TRAIN_FILE = "voc_2012_train_%03d.tfrecord"
+
+def decode_image(image_buffer):
+    return image_ops.decode_jpeg(image_buffer, 3)
+
+def decode_boxes(ymin, xmin, ymax, xmax):
+    ymin_v = ymin.values
+    xmin_v = xmin.values
+    ymax_v = ymax.values
+    xmax_v = xmax.values
+
+    sides = []
+    sides.append(array_ops.expand_dims(ymin_v, 0))
+    sides.append(array_ops.expand_dims(xmin_v, 0))
+    sides.append(array_ops.expand_dims(ymax_v, 0))
+    sides.append(array_ops.expand_dims(xmax_v, 0))
+
+    bounding_box = array_ops.concat(sides, 0)
+    return array_ops.transpose(bounding_box)
 
 def read_and_decode(filename_queue):
     reader = tf.TFRecordReader()
@@ -38,11 +57,15 @@ def read_and_decode(filename_queue):
         'image/object/bbox/truncated': tf.VarLenFeature(dtype=tf.int64),
     })
 
-    # image = tf.decode_raw(keys_to_features['image_raw'],tf.uint8)
-    # label = tf.cast(keys_to_features['label'],tf.int32)
-    # image.set_shape([IMG_WIDTH*IMG_HEIGHT*IMG_CHANNELS])
-    # image = tf.reshape(image,[IMG_SIZE,IMG_SIZE,IMG_CHANNELS])
-    return keys_to_features['image/object/bbox/label'].values
+    image = decode_image(keys_to_features['image/encoded'])
+    shape = keys_to_features['image/shape']
+    boxes = decode_boxes(keys_to_features['image/object/bbox/ymin'],
+                        keys_to_features['image/object/bbox/xmin'],
+                        keys_to_features['image/object/bbox/ymax'],
+                        keys_to_features['image/object/bbox/xmax'])
+    label = keys_to_features['image/object/bbox/label']
+
+    return image, shape, boxes, label
 
 def inputs(train_path, val_path, data_set,batch_size,num_epochs):
     data_file_num = 0
@@ -61,7 +84,6 @@ def inputs(train_path, val_path, data_set,batch_size,num_epochs):
             file_lists[j] = join(train_path, file_lists[j])
 
         filename_queue = tf.train.string_input_producer(file_lists, num_epochs=num_epochs)
-        label = read_and_decode(filename_queue)
-        labels = tf.train.shuffle_batch([label], batch_size=batch_size, num_threads=64, capacity=5000, min_after_dequeue=3000)
-
-    return labels
+        image, shape, boxes, label = read_and_decode(filename_queue)
+    
+    return image, shape, boxes, label
