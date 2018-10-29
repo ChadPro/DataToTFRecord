@@ -45,6 +45,17 @@ VOC_LABELS = {
     'tvmonitor': (20, 'Indoor'),
 }
 
+VOC_HUMAN_LIGHT_LABELS = {
+    'none' : (0, 'Background'),
+    'human_red' : (1, 'TrafficLight'),
+    'human_geeen' : (2, 'TrafficLight')
+}
+
+def label_dict(dataname='pascalvoc'):
+    if dataname == 'humanlight':
+        return VOC_HUMAN_LIGHT_LABELS
+    
+    return VOC_LABELS
 
 def get_split(split_name, dataset_dir, file_pattern, reader,
               split_to_sizes, items_to_descriptions, num_classes):

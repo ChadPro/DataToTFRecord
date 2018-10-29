@@ -13,11 +13,7 @@ import cv2
 from tensorflow.python.ops import image_ops
 from tensorflow.python.ops import array_ops
 
-# Image 
-IMG_SIZE = 448
-IMG_CHANNELS = 3
-
-TRAIN_FILE = "voc_2012_train_%03d.tfrecord"
+TRAIN_FILE = "humanlight_train_%03d.tfrecord"
 
 def decode_image(image_buffer):
     return image_ops.decode_jpeg(image_buffer, 3)
@@ -52,9 +48,7 @@ def read_and_decode(filename_queue):
         'image/object/bbox/ymin': tf.VarLenFeature(dtype=tf.float32),
         'image/object/bbox/xmax': tf.VarLenFeature(dtype=tf.float32),
         'image/object/bbox/ymax': tf.VarLenFeature(dtype=tf.float32),
-        'image/object/bbox/label': tf.VarLenFeature(dtype=tf.int64),
-        'image/object/bbox/difficult': tf.VarLenFeature(dtype=tf.int64),
-        'image/object/bbox/truncated': tf.VarLenFeature(dtype=tf.int64),
+        'image/object/bbox/label': tf.VarLenFeature(dtype=tf.int64)
     })
 
     image = decode_image(keys_to_features['image/encoded'])
@@ -67,7 +61,7 @@ def read_and_decode(filename_queue):
 
     return image, shape, boxes, label
 
-def inputs(train_path, val_path, data_set,batch_size,num_epochs):
+def inputs(train_path, val_path, data_set, num_epochs):
     data_file_num = 0
     if not num_epochs:
         num_epochs = None
@@ -79,10 +73,8 @@ def inputs(train_path, val_path, data_set,batch_size,num_epochs):
         read_file = val_path
 
     with tf.name_scope('tfrecord_input') as scope:
-        file_lists = [TRAIN_FILE % i for i in range(0,data_file_num)]
-        for j in range(data_file_num):
-            file_lists[j] = join(train_path, file_lists[j])
 
+        file_lists = [join(train_path, TRAIN_FILE) % i for i in range(0, data_file_num)]
         filename_queue = tf.train.string_input_producer(file_lists, num_epochs=num_epochs)
         image, shape, boxes, label = read_and_decode(filename_queue)
     

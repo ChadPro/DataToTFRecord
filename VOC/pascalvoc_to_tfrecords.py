@@ -43,7 +43,7 @@ import tensorflow as tf
 import xml.etree.ElementTree as ET
 
 from dataset_utils import int64_feature, float_feature, bytes_feature
-from pascalvoc_common import VOC_LABELS
+import pascalvoc_common
 
 # Original dataset organisation.
 DIRECTORY_ANNOTATIONS = 'Annotations/'
@@ -54,7 +54,7 @@ RANDOM_SEED = 4242
 SAMPLES_PER_FILES = 200
 
 
-def _process_image(directory, name):
+def _process_image(directory, name, dataname='pascalvoc'):
     """Process a image and annotation file.
 
     Args:
@@ -87,7 +87,8 @@ def _process_image(directory, name):
     truncated = []
     for obj in root.findall('object'):
         label = obj.find('name').text
-        labels.append(int(VOC_LABELS[label][0]))
+        label_dict = pascalvoc_common.label_dict(dataname=dataname)
+        labels.append(int(label_dict[label][0]))
         labels_text.append(label.encode('ascii'))
 
         if obj.find('difficult'):
@@ -152,7 +153,7 @@ def _convert_to_example(image_data, labels, labels_text, bboxes, shape,
     return example
 
 
-def _add_to_tfrecord(dataset_dir, name, tfrecord_writer):
+def _add_to_tfrecord(dataset_dir, name, tfrecord_writer, dataname='pascalvoc'):
     """Loads data from image and annotations files and add them to a TFRecord.
 
     Args:
@@ -161,7 +162,7 @@ def _add_to_tfrecord(dataset_dir, name, tfrecord_writer):
       tfrecord_writer: The TFRecord writer to use for writing.
     """
     image_data, shape, bboxes, labels, labels_text, difficult, truncated = \
-        _process_image(dataset_dir, name)
+        _process_image(dataset_dir, name, dataname=dataname)
     example = _convert_to_example(image_data, labels, labels_text,
                                   bboxes, shape, difficult, truncated)
     tfrecord_writer.write(example.SerializeToString())
@@ -171,7 +172,7 @@ def _get_output_filename(output_dir, name, idx):
     return '%s/%s_%03d.tfrecord' % (output_dir, name, idx)
 
 
-def run(dataset_dir, output_dir, name='voc_train', shuffling=False):
+def run(dataset_dir, output_dir, name='voc_train', dataname='pascalvoc', shuffling=False):
     """Runs the conversion operation.
 
     Args:
@@ -202,7 +203,7 @@ def run(dataset_dir, output_dir, name='voc_train', shuffling=False):
 
                 filename = filenames[i]
                 img_name = filename[:-4]
-                _add_to_tfrecord(dataset_dir, img_name, tfrecord_writer)
+                _add_to_tfrecord(dataset_dir, img_name, tfrecord_writer, dataname=dataname)
                 i += 1
                 j += 1
             fidx += 1
