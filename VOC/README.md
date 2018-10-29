@@ -1,5 +1,6 @@
 ## 0. 介绍
-转换运行脚本为convert2record.py:  
+
+转换运行脚本为convert2record.py,依赖文件**pascalvoc\_to\_tfrecords.py**,**dataset\_utils.py**,**pascalvoc\_common,py**. 
 
 ## 1. 人行红绿灯数据
 #### 1.1 convert
