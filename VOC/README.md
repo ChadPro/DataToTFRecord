@@ -5,9 +5,9 @@
 
 ## 1. 人行红绿灯数据
 #### 1.1 convert
-python tf_convert_data.py \
-    --dataset_name='humanlight' \
-    --dataset_dir='' \
+python convert2record.py \
+    --data_name='humanlight' \
+    --data_dir='' \
     --output_name='humanlight_train' \
     --output_dir=''
 #### 1.2 read test
@@ -15,9 +15,9 @@ python read_image.py
 
 ## 2. VOC-21-class
 #### 1.1 convert
-python tf_convert_data.py \
-    --dataset_name='pascalvoc' \
-    --dataset_dir='' \
+python convert2record.py \
+    --data_name='pascalvoc' \
+    --data_dir='' \
     --output_name='what_train' \
     --output_dir=''
 #### 1.2 read test
