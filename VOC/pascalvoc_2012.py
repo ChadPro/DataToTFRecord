@@ -67,7 +67,7 @@ def read_and_decode(filename_queue):
 
     return image, shape, boxes, label
 
-def inputs(train_path, val_path, data_set,batch_size,num_epochs):
+def inputs(train_path, val_path, data_set,num_epochs):
     data_file_num = 0
     if not num_epochs:
         num_epochs = None

@@ -11,7 +11,9 @@ python convert2record.py \
     --output_name='humanlight_train' \
     --output_dir=''
 #### 1.2 read test
-python read_image.py
+python read_image.py \
+    --datatype='humanlight' \
+    --datapath=''
 
 ## 2. VOC-21-class
 #### 1.1 convert
@@ -21,3 +23,6 @@ python convert2record.py \
     --output_name='what_train' \
     --output_dir=''
 #### 1.2 read test
+python read_image.py \
+    --datatype='humanlight' \
+    --datapath='voc21'

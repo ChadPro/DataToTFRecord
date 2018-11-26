@@ -1,4 +1,5 @@
-# Copyright 2018 The Candela. All Rights Reserved.
+# -*- coding: utf-8 -*-
+# Copyright 2018 The LongYan. All Rights Reserved.
 from __future__ import absolute_import
 from __future__ import division
 
@@ -6,10 +7,18 @@ import numpy as np
 import tensorflow as tf
 import cv2
 import voc_humanlight
+import pascalvoc_2012
+import argparse
 
-FLAGS = tf.app.flags.FLAGS
+parser = argparse.ArgumentParser()
+parser.add_argument('datatype', type=str, help='')
+parser.add_argument('datapath', type=str, help='')
+args = parser.parse_args()
 
-image, shape, boxes, label = voc_humanlight.inputs("./tfrecords", "", "Train", None)
+if args.datatype == 'voc21':
+    image, shape, boxes, label = pascalvoc_2012.inputs(args.datapath, "", "Train", None)
+elif args.datatype == 'humanlight':
+    image, shape, boxes, label = voc_humanlight.inputs(args.datapath, "", "Train", None)
 
 with tf.Session() as sess:
     coord = tf.train.Coordinator()
