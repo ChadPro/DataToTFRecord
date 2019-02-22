@@ -1,4 +1,4 @@
-# Copyright 2018 The LongYan. All Rights Reserved.
+# Copyright 2018 The Candela. All Rights Reserved.
 from __future__ import absolute_import
 from __future__ import division
 

@@ -1,4 +1,4 @@
-# Copyright 2018 The Candela. All Rights Reserved.
+# Copyright 2018 The LongYan. All Rights Reserved.
 
 """A script for gen random list."""
 
