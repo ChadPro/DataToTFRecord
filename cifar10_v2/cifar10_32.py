@@ -1,16 +1,15 @@
+# Copyright 2018 The LongYan. All Rights Reserved.
 import numpy as np
 import tensorflow as tf
 import time
-from scipy.misc import imread,imresize
 from os import walk
 from os.path import join
 import sys
 import cv2
-from PIL import Image
 import matplotlib.pyplot as plt
 
 # Image 
-IMG_SIZE = 224
+IMG_SIZE = 32
 IMG_CHANNELS = 3
 
 def read_and_decode(filename_queue):
@@ -23,14 +22,13 @@ def read_and_decode(filename_queue):
     })
     image = tf.decode_raw(features['image_raw'],tf.uint8)
     label = tf.cast(features['label'],tf.int32)
-    # image.set_shape([IMG_WIDTH*IMG_HEIGHT*IMG_CHANNELS])
     image = tf.reshape(image,[IMG_SIZE,IMG_SIZE,IMG_CHANNELS])
     return image, label
 
-def inputs(train_path, val_path, data_set,batch_size,num_epochs):
+def inputs(train_path, val_path, data_set, batch_size,num_epochs):
     if not num_epochs:
         num_epochs = None
-    if data_set == 'train':
+    if data_set == 'Train':
         read_file = train_path
     else:
         read_file = val_path
