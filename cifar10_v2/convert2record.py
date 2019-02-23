@@ -14,8 +14,8 @@ DATA_PATH = "../../Datasets/Cifar10/cifar-10-batches-py"
 TRAIN_LIST = ["data_batch_1", "data_batch_2", "data_batch_3", "data_batch_4", "data_batch_5"]   
 TRAIN_LIST = [join(DATA_PATH, p) for p in TRAIN_LIST]
 TEST_DATA_PATH = "../../Datasets/Cifar10/cifar-10-batches-py/test_batch"    # 10000 nums data
-TRAIN_TFRECORD_PATH = "./Cifar10_32Train.tfrecord"
-TEST_TFRECORD_PATH = "./Cifar10_32Test.tfrecord"
+TRAIN_TFRECORD_PATH = "../../Datasets/Cifar10/Cifar10_32Train.tfrecord"
+TEST_TFRECORD_PATH = "../../Datasets/Cifar10/Cifar10_32Test.tfrecord"
 
 def _int64_feature(value):
     return tf.train.Feature(int64_list = tf.train.Int64List(value=[value]))
